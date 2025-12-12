@@ -1,0 +1,48 @@
+node_modules/
+.expo/
+.expo-shared/
+dist/
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+*.db
+*.db-journal
+
+# macOS
+.DS_Store
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# System files - Windows
+AppData/
+*.tmp
+*.temp
+
+# Browser cache
+**/Chrome/
+**/Google/
+**/Cache/
+**/CacheStorage/
+
+# WhatsApp Desktop
+**/WhatsApp*/
+**/5319275A.WhatsAppDesktop*/
+
+# IDE
+**/Windsurf/
+**/.vscode/
+**/.idea/
+
+# Temp files
+*.ldb
+*.pma

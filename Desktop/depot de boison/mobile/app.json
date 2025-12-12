@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "Dépôt de Boissons",
+    "slug": "depot-boisson",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#0ea5e9"
+    },
+    "android": {
+      "package": "com.depotboisson.app",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#0ea5e9"
+      },
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE"
+      ]
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.depotboisson.app"
+    },
+    "plugins": [
+      "expo-sqlite"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "a24d26b5-077e-498b-b8bf-3c8801da7d09"
+      }
+    }
+  }
+}
