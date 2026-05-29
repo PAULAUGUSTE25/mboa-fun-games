@@ -39,3 +39,74 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# System files
+AppData/
+Application Data/
+Cookies/
+Local Settings/
+Menu Démarrer/
+Mes documents/
+Modèles/
+Recent/
+SendTo/
+Voisinage d'impression/
+Voisinage réseau/
+NTUSER.DAT*
+ntuser.*
+
+# Development tools
+.windsurf/
+.vscode/
+.cursor/
+.bitewingman/
+.bito/
+.codeium/
+.codegpt/
+.crossnote/
+.cargo/
+.cache/
+.dotnet/
+.emulator_console_auth_token/
+.expo/
+.fly/
+.gemini/
+.git-credentials/
+.git-for-windows-updater/
+.gitconfig/
+.gradle/
+.javacpp/
+.matplotlib/
+.nuget/
+.railway/
+.redhat/
+.rustup/
+.skiko/
+.ssh/
+.wdm/
+
+# Project directories outside main folder
+../depot de boison/
+../AndroidStudioProjects/
+../CascadeProjects/
+../MBOA COMMAND/
+../MBOA_Market_Memoire/
+../atelier-financial/
+../comebat/
+../defence guid/
+../fbtp/
+../iot/
+../mboa next/
+../mboa-fun-for-all/
+../mboa-fun/
+../mboa-market-backoffice/
+../mboa-market/
+../mon-agricult-app/
+../mon-projet/
+../projects/
+../src/
+../TouristManagement-app/
+../TouristManagerApp/
+
+# Links and shortcuts
+*.lnk
