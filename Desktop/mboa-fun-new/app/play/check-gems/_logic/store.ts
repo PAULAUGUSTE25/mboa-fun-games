@@ -148,13 +148,15 @@ export const useGameStore = create<GameStore>((set, get) => ({
     };
 
     // Valet OU Joker -> choix de couleur obligatoire (wildcard).
+    // Si Valet joué pendant une pioche, il BLOQUE la pioche (pendingDraws remis à 0)
+    const blockedDraw = effect.wild && state.pendingDraws > 0;
     if (effect.wild || effect.jokerWild) {
       set({
         playerHand: newHand,
         discard: newDiscard,
-        pendingDraws: state.pendingDraws + effect.drawPenalty,
+        pendingDraws: blockedDraw ? 0 : state.pendingDraws + effect.drawPenalty,
         status: 'choosing-suit',
-        message: effect.message,
+        message: blockedDraw ? 'Valet bloque la pioche ! Choisis une couleur' : effect.message,
         lastPlayedId: card.id,
         ...resetFlags,
       });
@@ -332,12 +334,14 @@ function playAiCard(
   // Valet ou Joker -> l'IA choisit la couleur la plus représentée dans sa main.
   let nextSuit: Suit = card.suit === 'joker' ? state.activeSuit : card.suit;
   let suitMsg = '';
+  // Si Valet joué pendant pioche, il bloque la pioche
+  const blockedDraw = effect.wild && state.pendingDraws > 0;
   if (effect.wild || effect.jokerWild) {
     nextSuit = aiChooseSuit(newHand);
-    suitMsg = ` (${nextSuit})`;
+    suitMsg = blockedDraw ? ` (bloque la pioche !)` : ` (${nextSuit})`;
   }
 
-  const newPendingDraws = state.pendingDraws + effect.drawPenalty;
+  const newPendingDraws = blockedDraw ? 0 : state.pendingDraws + effect.drawPenalty;
   // As : l'IA rejoue. Sinon, à toi.
   const nextPlayer: Player = effect.replay ? 'opponent' : 'player';
 

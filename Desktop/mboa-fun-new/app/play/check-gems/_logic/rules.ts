@@ -26,18 +26,21 @@ export function isPlayable(
 ): boolean {
   if (!topCard) return true;
 
-  // Pioche en attente : on ne peut contrer qu'avec une autre carte "draw".
+  // Pioche en attente : on peut contrer avec une carte "draw" (7, Joker) OU avec un Valet (J) qui bloque la pioche
   if (pendingDraws > 0) {
-    return isDrawCard(card);
+    return isDrawCard(card) || card.rank === 'J';
   }
 
-  // Joker : toujours posable (wildcard absolue).
+  // 2 : passe-partout (toujours posable, comme un wildcard sans effet)
+  if (card.rank === '2') return true;
+
+  // Joker : toujours posable (wildcard absolue +4)
   if (isJoker(card)) return true;
 
-  // Valet : toujours posable (wildcard couleur).
+  // Valet : toujours posable (wildcard couleur, peut bloquer une pioche)
   if (card.rank === 'J') return true;
 
-  // Sinon : match couleur active OU même rang.
+  // Sinon : match couleur active OU même rang
   return card.suit === activeSuit || card.rank === topCard.rank;
 }
 
@@ -73,10 +76,12 @@ export function getCardEffect(card: Card): PlayEffect {
     };
   }
   switch (card.rank) {
+    case '2':
+      return { replay: false, drawPenalty: 0, wild: false, jokerWild: false, message: '2 passe-partout !' };
     case '7':
       return { replay: false, drawPenalty: 2, wild: false, jokerWild: false, message: '+2 cartes !' };
     case 'J':
-      return { replay: false, drawPenalty: 0, wild: true, jokerWild: false, message: 'Choisis une couleur' };
+      return { replay: false, drawPenalty: 0, wild: true, jokerWild: false, message: 'Commande : choisis une couleur' };
     case 'A':
       return { replay: true, drawPenalty: 0, wild: false, jokerWild: false, message: 'Tu rejoues !' };
     default:
@@ -94,16 +99,17 @@ export function aiChooseCard(
   const playable = hand.filter((c) => isPlayable(c, topCard, activeSuit, pendingDraws));
   if (playable.length === 0) return null;
 
-  // Pioche en attente : contre avec joker en priorité (+4) puis 7 (+2).
+  // Pioche en attente : contre avec joker (+4), puis Valet pour bloquer, puis 7 (+2)
   if (pendingDraws > 0) {
     return (
       playable.find((c) => isJoker(c)) ??
+      playable.find((c) => c.rank === 'J') ??
       playable.find((c) => c.rank === '7') ??
       null
     );
   }
 
-  // Sinon : préfère cartes spéciales (joker > A > J > 7) puis grosse carte normale.
+  // Sinon : préfère cartes spéciales (joker > A > J > 7 > 2 passe-partout) puis grosse carte normale.
   const joker = playable.find((c) => isJoker(c));
   if (joker) return joker;
   const ace = playable.find((c) => c.rank === 'A');
@@ -112,6 +118,8 @@ export function aiChooseCard(
   if (jack) return jack;
   const seven = playable.find((c) => c.rank === '7');
   if (seven) return seven;
+  const two = playable.find((c) => c.rank === '2');
+  if (two) return two;
 
   // Carte normale : décharge les hauts rangs en premier.
   const rankOrder: Record<string, number> = {
