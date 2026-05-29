@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MBOA Empire — Plateau Ludo</title>
+
+  <style>
+    :root {
+      --cell: 48px;
+      --gold: #d8a84a;
+      --gold-light: #ffe2a0;
+      --wood: #251307;
+      --deep: #090806;
+      --stone: #e9e3d4;
+
+      --red: #b51f28;
+      --red-light: #f3b8b8;
+
+      --blue: #1c55c9;
+      --blue-light: #bcd7ff;
+
+      --green: #13894d;
+      --green-light: #b9efc8;
+
+      --yellow: #d7a60d;
+      --yellow-light: #fff09c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 50% 15%, rgba(216, 168, 74, 0.16), transparent 38%),
+        linear-gradient(135deg, rgba(0, 95, 55, 0.16), transparent 25%),
+        linear-gradient(225deg, rgba(207, 20, 43, 0.14), transparent 25%),
+        #070604;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--gold-light);
+      padding: 24px;
+    }
+
+    .game-wrap {
+      position: relative;
+      padding: 26px;
+      border-radius: 28px;
+      background:
+        linear-gradient(135deg, rgba(255, 224, 150, 0.16), transparent 28%),
+        linear-gradient(45deg, #160b05, #301708 45%, #120905);
+      border: 2px solid rgba(216, 168, 74, 0.75);
+      box-shadow:
+        0 0 0 7px rgba(0, 0, 0, 0.4),
+        0 28px 80px rgba(0, 0, 0, 0.75),
+        inset 0 0 35px rgba(255, 213, 121, 0.12);
+    }
+
+    .brand { text-align: center; margin-bottom: 18px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-light); text-shadow: 0 3px 0 #000, 0 0 18px rgba(216, 168, 74, 0.45); }
+    .brand small { display: block; font-size: 12px; opacity: 0.75; letter-spacing: 0.45em; margin-bottom: 6px; }
+    .brand strong { font-size: clamp(28px, 5vw, 54px); line-height: 0.9; }
+
+    .board {
+      width: calc(var(--cell) * 15); height: calc(var(--cell) * 15);
+      display: grid; grid-template-columns: repeat(15, var(--cell)); grid-template-rows: repeat(15, var(--cell));
+      position: relative; overflow: hidden; border-radius: 18px; border: 5px solid #070504; outline: 2px solid rgba(216, 168, 74, 0.85);
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        radial-gradient(circle at 50% 50%, rgba(216, 168, 74, 0.13), transparent 42%),
+        #19110b;
+      background-size: var(--cell) var(--cell), var(--cell) var(--cell), auto, auto;
+      box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.9);
+    }
+  </style>
+</head>
+<body>
+  <main class="game-wrap">
+    <div class="brand"><small>Plateau royal du jeu</small><strong>MBOA LUDO</strong></div>
+    <section class="board"></section>
+  </main>
+</body>
+</html>

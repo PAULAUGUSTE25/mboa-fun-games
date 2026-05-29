@@ -1,0 +1,289 @@
+@import "tailwindcss";
+
+:root {
+  /* Emerald Heritage Design System */
+  --mboa-bg: #111413;
+  --mboa-surface: #1d201f;
+  --mboa-surface-high: #282b29;
+  --mboa-surface-highest: #323534;
+  --mboa-primary: #94d3c1;
+  --mboa-primary-container: #004d40;
+  --mboa-gold: #e9c349;
+  --mboa-text: #e1e3e1;
+  --mboa-text-muted: #bfc9c4;
+  --mboa-outline: #3f4945;
+
+  /* Mboa Empire — Royal palette */
+  --empire-dark: #1C1308;       /* Dark carved wood */
+  --empire-mahogany: #4F2F17;   /* Deep mahogany */
+  --empire-brown: #684A29;      /* Warm brown */
+  --empire-gold: #B18A62;       /* Antique gold */
+  --empire-gold-soft: #CEA271;  /* Soft gold */
+  --empire-ivory: #F4CE96;      /* Ivory gold (text highlight) */
+  --empire-red: #90271B;        /* Deep Cameroon red */
+  --empire-green: #2A4C23;      /* Deep Cameroon green */
+}
+
+@theme inline {
+  --color-background: var(--mboa-bg);
+  --color-foreground: var(--mboa-text);
+  --color-mboa-bg: var(--mboa-bg);
+  --color-mboa-surface: var(--mboa-surface);
+  --color-mboa-surface-high: var(--mboa-surface-high);
+  --color-mboa-surface-highest: var(--mboa-surface-highest);
+  --color-mboa-primary: var(--mboa-primary);
+  --color-mboa-primary-container: var(--mboa-primary-container);
+  --color-mboa-gold: var(--mboa-gold);
+  --color-mboa-text: var(--mboa-text);
+  --color-mboa-text-muted: var(--mboa-text-muted);
+  --color-mboa-outline: var(--mboa-outline);
+  --color-empire-dark: var(--empire-dark);
+  --color-empire-mahogany: var(--empire-mahogany);
+  --color-empire-brown: var(--empire-brown);
+  --color-empire-gold: var(--empire-gold);
+  --color-empire-gold-soft: var(--empire-gold-soft);
+  --color-empire-ivory: var(--empire-ivory);
+  --color-empire-red: var(--empire-red);
+  --color-empire-green: var(--empire-green);
+  --font-sans: var(--font-montserrat);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--mboa-bg);
+  color: var(--mboa-text);
+  font-family: var(--font-montserrat), system-ui, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--mboa-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--mboa-outline);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--mboa-primary);
+}
+
+/* Hide scrollbar utility */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Premium card styles */
+.premium-card {
+  background: #1a2421;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.premium-card:hover {
+  border-color: rgba(148, 211, 193, 0.3);
+  box-shadow: 0 0 30px rgba(148, 211, 193, 0.1);
+}
+
+/* Glass panel */
+.glass-panel {
+  background: rgba(29, 32, 31, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Emerald glow effect */
+.emerald-glow {
+  box-shadow: 0 0 20px rgba(148, 211, 193, 0.3);
+}
+
+/* Gold glow effect */
+.gold-glow {
+  box-shadow: 0 0 20px rgba(233, 195, 73, 0.3);
+}
+
+/* Subtle pattern overlay */
+.mboa-pattern {
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(148, 211, 193, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(233, 195, 73, 0.03) 0%, transparent 50%);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--mboa-primary) 0%, var(--mboa-gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Deep Carved Wood - top highlight + deep #1B0D05 base for engraved effect */
+.wood-text {
+  background: linear-gradient(
+    180deg,
+    #a87858 0%,
+    #7b5238 25%,
+    #4a2c1a 55%,
+    #2d160c 80%,
+    #1B0D05 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.8));
+  letter-spacing: 0.02em;
+}
+
+/* Subtle carved wood variant */
+.wood-text-soft {
+  background: linear-gradient(
+    180deg,
+    #8b6f47 0%,
+    #4a2c1a 60%,
+    #1B0D05 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Button primary */
+.btn-primary {
+  background: linear-gradient(135deg, var(--mboa-primary-container) 0%, #00695c 100%);
+  color: var(--mboa-primary);
+  border: 1px solid rgba(148, 211, 193, 0.3);
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #00695c 0%, var(--mboa-primary-container) 100%);
+  box-shadow: 0 0 20px rgba(148, 211, 193, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Button gold */
+.btn-gold {
+  background: linear-gradient(135deg, #b8941d 0%, var(--mboa-gold) 100%);
+  color: #1a1a1a;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.btn-gold:hover {
+  box-shadow: 0 0 20px rgba(233, 195, 73, 0.4);
+  transform: translateY(-1px);
+}
+
+/* ===================================
+ * MBOA EMPIRE — Royal styling
+ * =================================== */
+
+/* Royal title (Mboa Empire) */
+.empire-title {
+  color: #F4CE96;
+  text-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.9),
+    0 2px 4px rgba(0, 0, 0, 0.7),
+    0 1px 0 rgba(28, 19, 8, 0.8);
+  letter-spacing: 0.04em;
+}
+
+/* Royal subtitle */
+.empire-subtitle {
+  color: #CEA271;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+}
+
+/* Gold accent text (small labels, prices) */
+.empire-accent {
+  color: #B18A62;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+/* Engraved text on wood (dark inscription) */
+.empire-engraved {
+  color: #1C1308;
+  text-shadow:
+    0 1px 0 rgba(244, 206, 150, 0.45),
+    0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* Royal button - wood with antique gold border */
+.empire-btn {
+  background: linear-gradient(180deg, #4F2F17 0%, #1C1308 100%);
+  border: 1px solid #B18A62;
+  color: #F4CE96;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow:
+    inset 0 1px 0 rgba(244, 206, 150, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5),
+    0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.empire-btn:hover:not(:disabled) {
+  border-color: #F4CE96;
+  box-shadow:
+    0 0 18px rgba(206, 162, 113, 0.45),
+    inset 0 1px 0 rgba(244, 206, 150, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5),
+    0 6px 12px rgba(0, 0, 0, 0.6);
+  transform: translateY(-1px);
+}
+
+.empire-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Glowing accent (active player, important highlight) */
+.empire-glow {
+  box-shadow: 0 0 18px rgba(206, 162, 113, 0.45);
+  border-color: #F4CE96 !important;
+}
+
+/* Carved wood panel background */
+.empire-panel {
+  background:
+    linear-gradient(180deg, rgba(79, 47, 23, 0.95) 0%, rgba(28, 19, 8, 0.95) 100%);
+  border: 1px solid #B18A62;
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(244, 206, 150, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.6),
+    0 8px 24px rgba(0, 0, 0, 0.5);
+}
