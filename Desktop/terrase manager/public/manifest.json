@@ -1,0 +1,18 @@
+{
+  "short_name": "La Terrasse POS",
+  "name": "La Terrasse Bar - POS & Caisse Manager",
+  "description": "Application de gestion de caisse et stock de boissons pour La Terrasse Bar & Lounge",
+  "icons": [
+    {
+      "src": "/la-terrasse-logo.png",
+      "type": "image/png",
+      "sizes": "192x192 512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#062414",
+  "theme_color": "#0A5C36",
+  "display": "standalone",
+  "orientation": "any"
+}
