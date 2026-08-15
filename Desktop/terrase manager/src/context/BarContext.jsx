@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { INITIAL_PRODUCTS, INITIAL_SALES_DEMO, INITIAL_TABLES } from "../data/sabcGuinnessCatalog";
-import { api } from "../api/client";
+import { api, cloudSync } from "../api/client";
 
 export const USERS = [
   { id: "u-paul", name: "Paul (Administrateur)", role: "ADMIN", pin: "1234" },
@@ -68,7 +68,7 @@ export function BarProvider({ children }) {
     localStorage.setItem("terrasse_bar_offline_queue", JSON.stringify(offlineQueue));
   }, [offlineQueue]);
 
-  // Sync with FastAPI backend on startup
+  // Sync with FastAPI backend or Shared Cloud Room
   const fetchBackendData = async () => {
     try {
       const prods = await api.getProducts();
@@ -86,8 +86,27 @@ export function BarProvider({ children }) {
       setIsBackendConnected(true);
       console.log("[BarContext] Successfully synchronized with FastAPI Backend & Database!");
     } catch (e) {
-      console.log("[BarContext] Backend offline, using high-speed local state storage.");
+      console.log("[BarContext] Local FastAPI Backend unreachable. Trying Cloud Sync Room...");
       setIsBackendConnected(false);
+
+      // Shared online cloud room sync (for Netlify & multi-phone online sync)
+      try {
+        const cloudData = await cloudSync.getRoomData();
+        if (cloudData) {
+          if (cloudData.products && Array.isArray(cloudData.products)) {
+            setProducts(cloudData.products);
+          }
+          if (cloudData.sales && Array.isArray(cloudData.sales)) {
+            setSales(cloudData.sales);
+          }
+          if (cloudData.movements && Array.isArray(cloudData.movements)) {
+            setMovements(cloudData.movements);
+          }
+          console.log("[BarContext] Successfully synchronized with Shared Online Cloud Room!");
+        }
+      } catch (errCloud) {
+        console.warn("[BarContext] Cloud room sync fallback error:", errCloud);
+      }
     }
   };
 
@@ -116,6 +135,18 @@ export function BarProvider({ children }) {
 
   useEffect(() => {
     fetchBackendData();
+
+    // BroadcastChannel for instant cross-tab / cross-window synchronization
+    let broadcastChannel = null;
+    if (typeof window !== "undefined" && "BroadcastChannel" in window) {
+      broadcastChannel = new BroadcastChannel("terrasse_pos_channel");
+      broadcastChannel.onmessage = (event) => {
+        console.log("[BroadcastChannel Message]:", event.data);
+        if (event.data && event.data.type === "DATA_CHANGED") {
+          fetchBackendData();
+        }
+      };
+    }
 
     const handleOnline = () => {
       setIsOnline(true);
@@ -146,6 +177,13 @@ export function BarProvider({ children }) {
       }
     });
 
+    // Background polling fallback every 8 seconds to ensure total multi-phone sync
+    const pollInterval = setInterval(() => {
+      if (navigator.onLine) {
+        fetchBackendData();
+      }
+    }, 8000);
+
     // Auto sync on startup if items exist in queue and online
     if (navigator.onLine && offlineQueue.length > 0) {
       syncOfflineQueue();
@@ -154,22 +192,32 @@ export function BarProvider({ children }) {
     return () => {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
+      clearInterval(pollInterval);
       if (socket) socket.close();
+      if (broadcastChannel) broadcastChannel.close();
     };
   }, []);
 
-  // Sync fallback local persistence
+  // Sync fallback local persistence & Online Cloud Room Broadcast
   useEffect(() => {
     localStorage.setItem("terrasse_bar_products", JSON.stringify(products));
-  }, [products]);
-
-  useEffect(() => {
     localStorage.setItem("terrasse_bar_sales", JSON.stringify(sales));
-  }, [sales]);
-
-  useEffect(() => {
     localStorage.setItem("terrasse_bar_movements", JSON.stringify(movements));
-  }, [movements]);
+
+    // Broadcast across local browser tabs
+    if (typeof window !== "undefined" && "BroadcastChannel" in window) {
+      try {
+        const bc = new BroadcastChannel("terrasse_pos_channel");
+        bc.postMessage({ type: "DATA_CHANGED" });
+        bc.close();
+      } catch (e) {}
+    }
+
+    // Save to Cloud Room so all online devices (e.g. Netlify) stay 100% in sync
+    if (!isBackendConnected && navigator.onLine) {
+      cloudSync.saveRoomData({ products, sales, movements });
+    }
+  }, [products, sales, movements, isBackendConnected]);
 
   // Cart operations
   const addToCart = (product) => {

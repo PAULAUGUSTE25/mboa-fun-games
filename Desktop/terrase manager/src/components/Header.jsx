@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useBar } from "../context/BarContext";
 import { APP_LOGO } from "../data/sabcGuinnessCatalog";
+import { getServerUrl, setServerUrl } from "../api/client";
 import {
   UserCheck,
   Clock,
@@ -141,6 +142,30 @@ export default function Header() {
                       Hors Ligne ({offlineQueue.length} vente{offlineQueue.length > 1 ? "s" : ""} locale{offlineQueue.length > 1 ? "s" : ""})
                     </span>
                   )}
+
+                  {/* Config Server Button */}
+                  <button
+                    onClick={() => {
+                      const current = getServerUrl();
+                      const input = prompt(
+                        "📡 CONFIGURATION DU SERVEUR DE SYNCHRONISATION\n\n" +
+                          "Pour synchroniser plusieurs tablettes/téléphones au même bar :\n" +
+                          "• Si vous êtes sur le Wi-Fi du bar : Entrez l'adresse IP de votre PC principal (ex: http://192.168.1.50:8000)\n" +
+                          "• Si vous avez un serveur Cloud : Entrez l'adresse du serveur Cloud\n" +
+                          "• Laissez vide pour rétablir la valeur par défaut.\n\n" +
+                          "URL ou IP du serveur actuel :",
+                        current
+                      );
+                      if (input !== null) {
+                        setServerUrl(input);
+                        window.location.reload();
+                      }
+                    }}
+                    title="Changer l'adresse IP du serveur de synchronisation"
+                    className="ml-1 px-1.5 py-0.5 text-[9px] rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-mono font-bold cursor-pointer transition-all"
+                  >
+                    ⚙️ IP Serveur
+                  </button>
                 </span>
               </p>
             </div>
