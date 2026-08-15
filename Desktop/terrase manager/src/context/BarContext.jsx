@@ -107,6 +107,10 @@ export function BarProvider({ children }) {
       } catch (errCloud) {
         console.warn("[BarContext] Cloud room sync fallback error:", errCloud);
       }
+
+      // Automatically purge stuck offline queue in CloudSync mode
+      setOfflineQueue([]);
+      localStorage.removeItem("terrasse_bar_offline_queue");
     }
   };
 
