@@ -117,18 +117,29 @@ export function BarProvider({ children }) {
     setIsSyncing(true);
     console.log(`[BarContext AutoSync] Processing ${queueData.length} offline sale(s)...`);
 
-    const remainingQueue = [];
-    for (const item of queueData) {
-      try {
-        await api.createSale(item.payload);
-        console.log(`[BarContext AutoSync] Successfully synced offline sale for table ${item.payload.table}`);
-      } catch (err) {
-        console.warn(`[BarContext AutoSync] Failed to sync sale for table ${item.payload.table}, keeping in queue`, err);
-        remainingQueue.push(item);
+    if (isBackendConnected) {
+      const remainingQueue = [];
+      for (const item of queueData) {
+        try {
+          await api.createSale(item.payload);
+          console.log(`[BarContext AutoSync] Successfully synced offline sale for table ${item.payload.table}`);
+        } catch (err) {
+          console.warn(`[BarContext AutoSync] Failed to sync sale for table ${item.payload.table}`, err);
+          remainingQueue.push(item);
+        }
       }
+      setOfflineQueue(remainingQueue);
+    } else {
+      // In CloudSync / Netlify mode: push room state to CloudSync and clear pending queue!
+      try {
+        await cloudSync.saveRoomData({ products, sales, movements });
+      } catch (err) {
+        console.warn("[BarContext AutoSync] CloudSync push error:", err);
+      }
+      setOfflineQueue([]);
+      localStorage.removeItem("terrasse_bar_offline_queue");
     }
 
-    setOfflineQueue(remainingQueue);
     setIsSyncing(false);
     await fetchBackendData();
   };
