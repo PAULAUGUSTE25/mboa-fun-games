@@ -192,12 +192,12 @@ export function BarProvider({ children }) {
       }
     });
 
-    // Background polling fallback every 8 seconds to ensure total multi-phone sync
+    // Real-time background polling every 2.5 seconds across all phones/tablets
     const pollInterval = setInterval(() => {
       if (navigator.onLine) {
         fetchBackendData();
       }
-    }, 8000);
+    }, 2500);
 
     // Auto sync on startup if items exist in queue and online
     if (navigator.onLine && offlineQueue.length > 0) {
