@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from backend.models import ProductModel
 
 INITIAL_SEED_PRODUCTS = [
-  // --- SABC BIERES ---
+  # --- SABC BIERES ---
   {
     "id": "sabc-castel-65",
     "name": "Castel Beer 65cl",
@@ -179,7 +179,7 @@ INITIAL_SEED_PRODUCTS = [
     "min_alert_threshold_bottles": 20,
     "image_url": "/branding/be16e442-f0b2-40a4-8e1f-862ef4665a42.webp",
   },
-  // --- GUINNESS ---
+  # --- GUINNESS ---
   {
     "id": "gn-stout-65",
     "name": "Guinness Foreign Extra Stout 65cl",
@@ -292,7 +292,7 @@ INITIAL_SEED_PRODUCTS = [
     "min_alert_threshold_bottles": 24,
     "image_url": "/branding/7330e1a3-1da9-437a-91a6-241c195a316c.png",
   },
-  // --- GAZEUSES ---
+  # --- GAZEUSES ---
   {
     "id": "sabc-djino-cocktail-65",
     "name": "D'Jino Cocktail de Fruits 65cl",
@@ -501,7 +501,7 @@ INITIAL_SEED_PRODUCTS = [
     "min_alert_threshold_bottles": 12,
     "image_url": "/branding/coca_cola.jpg",
   },
-  // --- EAUX ---
+  # --- EAUX ---
   {
     "id": "sabc-tangui-15",
     "name": "Source Tangui 1.5L",
@@ -518,7 +518,7 @@ INITIAL_SEED_PRODUCTS = [
     "min_alert_threshold_bottles": 30,
     "image_url": "/branding/3eb82c7c-b948-467f-959c-a52672c53cd1.jpg",
   },
-  // --- ENERGISANTES ---
+  # --- ENERGISANTES ---
   {
     "id": "sabc-xxl-energy-33",
     "name": "XXL Energy Canette 33cl",
