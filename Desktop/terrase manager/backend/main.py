@@ -68,6 +68,8 @@ def get_products(db: Session = Depends(get_db)):
 @app.post("/api/products", response_model=ProductResponse)
 async def create_product(prod: ProductCreate, db: Session = Depends(get_db)):
     prod_id = prod.id or f"prod-{int(time.time() * 1000)}"
+    glaces = prod.stockGlaces if prod.stockGlaces is not None else int(prod.currentStockBottles * 0.6)
+    non_glaces = prod.stockNonGlaces if prod.stockNonGlaces is not None else (prod.currentStockBottles - glaces)
     db_prod = ProductModel(
         id=prod_id,
         name=prod.name,
@@ -79,6 +81,8 @@ async def create_product(prod: ProductCreate, db: Session = Depends(get_db)):
         buy_price_casier=prod.buyPriceCasier,
         sell_price_bottle=prod.sellPriceBottle,
         current_stock_bottles=prod.currentStockBottles,
+        stock_glaces=glaces,
+        stock_non_glaces=non_glaces,
         min_alert_threshold_bottles=prod.minAlertThresholdBottles,
         image_url=prod.imageUrl or "🍺",
     )
@@ -106,6 +110,10 @@ async def update_product(product_id: str, prod: ProductCreate, db: Session = Dep
     db_prod.buy_price_casier = prod.buyPriceCasier
     db_prod.sell_price_bottle = prod.sellPriceBottle
     db_prod.current_stock_bottles = prod.currentStockBottles
+    if prod.stockGlaces is not None:
+        db_prod.stock_glaces = prod.stockGlaces
+    if prod.stockNonGlaces is not None:
+        db_prod.stock_non_glaces = prod.stockNonGlaces
     db_prod.min_alert_threshold_bottles = prod.minAlertThresholdBottles
     db_prod.image_url = prod.imageUrl or "🍺"
 
@@ -138,6 +146,7 @@ async def restock_product(
 
     bottles_added = casiers * db_prod.bottles_per_casier
     db_prod.current_stock_bottles += bottles_added
+    db_prod.stock_non_glaces += bottles_added
 
     movement = MovementModel(
         id=f"MOV-IN-{int(time.time() * 1000)}",
@@ -195,8 +204,14 @@ async def create_sale(sale: SaleCreate, db: Session = Depends(get_db)):
                 detail=f"Stock insuffisant pour {db_prod.name}. Reste: {db_prod.current_stock_bottles} btl(s)",
             )
 
-        # Decrement stock atomically
-        db_prod.current_stock_bottles -= item.quantity
+        # Deduct chilled first then non-chilled
+        glaced_current = db_prod.stock_glaces or 0
+        deduct_glaced = min(glaced_current, item.quantity)
+        remaining_deduct = item.quantity - deduct_glaced
+
+        db_prod.stock_glaces = max(0, glaced_current - deduct_glaced)
+        db_prod.stock_non_glaces = max(0, (db_prod.stock_non_glaces or 0) - remaining_deduct)
+        db_prod.current_stock_bottles = max(0, db_prod.current_stock_bottles - item.quantity)
 
         line_total = item.quantity * item.unitPrice
         raw_total += line_total

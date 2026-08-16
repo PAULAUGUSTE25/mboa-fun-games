@@ -17,6 +17,8 @@ class ProductModel(Base):
     buy_price_casier = Column(Float, nullable=False)
     sell_price_bottle = Column(Float, nullable=False)
     current_stock_bottles = Column(Integer, default=0)
+    stock_glaces = Column(Integer, default=0)
+    stock_non_glaces = Column(Integer, default=0)
     min_alert_threshold_bottles = Column(Integer, default=24)
     image_url = Column(String, default="🍺")
 

@@ -26,6 +26,7 @@ export default function Header() {
     isSyncing,
     offlineQueue,
     syncOfflineQueue,
+    fetchBackendData,
   } = useBar();
 
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -117,7 +118,7 @@ export default function Header() {
 
                 <span className="h-2.5 w-px bg-slate-300"></span>
 
-                {/* Network & Offline Status Badge */}
+                {/* Network & Real-Time Sync Status Badge */}
                 <span className="flex items-center gap-1 text-[9px] sm:text-[10px]">
                   <Wifi className={`w-3 h-3 ${isOnline ? "text-emerald-600" : "text-amber-600 animate-pulse"}`} />
                   {isSyncing ? (
@@ -126,20 +127,18 @@ export default function Header() {
                     </span>
                   ) : isOnline ? (
                     <span className="text-emerald-700 font-bold flex items-center gap-1">
-                      <span>En Ligne</span>
-                      {offlineQueue.length > 0 && (
-                        <button
-                          onClick={syncOfflineQueue}
-                          title="Cliquer pour synchroniser les ventes hors-ligne"
-                          className="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 border border-amber-300 font-mono font-black"
-                        >
-                          {offlineQueue.length} en attente 🔄
-                        </button>
-                      )}
+                      <span>{isBackendConnected ? "Serveur Local 🟢" : "Cloud Sync Live 🌐"}</span>
+                      <button
+                        onClick={() => fetchBackendData()}
+                        title="Forcer la synchroniser temps réel"
+                        className="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300 font-mono font-bold hover:bg-emerald-200 transition-all cursor-pointer"
+                      >
+                        Synchro 🔄
+                      </button>
                     </span>
                   ) : (
                     <span className="text-amber-800 font-extrabold bg-amber-100 px-1.5 py-0.2 rounded-md border border-amber-300">
-                      Hors Ligne ({offlineQueue.length} vente{offlineQueue.length > 1 ? "s" : ""} locale{offlineQueue.length > 1 ? "s" : ""})
+                      Hors Ligne
                     </span>
                   )}
 
@@ -149,10 +148,9 @@ export default function Header() {
                       const current = getServerUrl();
                       const input = prompt(
                         "📡 CONFIGURATION DU SERVEUR DE SYNCHRONISATION\n\n" +
-                          "Pour synchroniser plusieurs tablettes/téléphones au même bar :\n" +
-                          "• Si vous êtes sur le Wi-Fi du bar : Entrez l'adresse IP de votre PC principal (ex: http://192.168.1.50:8000)\n" +
-                          "• Si vous avez un serveur Cloud : Entrez l'adresse du serveur Cloud\n" +
-                          "• Laissez vide pour rétablir la valeur par défaut.\n\n" +
+                          "Pour synchroniser plusieurs téléphones au même bar :\n" +
+                          "• Wi-Fi du bar : Entrez l'IP du PC (ex: http://192.168.1.50:8000)\n" +
+                          "• Cloud : Laissez vide pour utiliser la synchronisation Cloud automatique.\n\n" +
                           "URL ou IP du serveur actuel :",
                         current
                       );
@@ -170,6 +168,7 @@ export default function Header() {
               </p>
             </div>
           </div>
+
 
           {/* Mobile User Logout Button */}
           <button

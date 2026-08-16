@@ -5,7 +5,13 @@ export const getServerUrl = () => {
   }
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
-    if (host && host !== "localhost" && host !== "127.0.0.1" && !host.includes("netlify.app") && !host.includes("vercel.app")) {
+    if (
+      host &&
+      host !== "localhost" &&
+      host !== "127.0.0.1" &&
+      !host.includes("netlify.app") &&
+      !host.includes("vercel.app")
+    ) {
       return `http://${host}:8000`;
     }
   }
@@ -29,14 +35,14 @@ export const setServerUrl = (url) => {
   }
 };
 
-// Global Cloud Shared Room for Netlify & Multi-Phone online synchronization
-const CLOUD_SYNC_ENDPOINT = "https://api.restful-api.dev/objects";
-const CLOUD_ROOM_ID = "terrasse_pos_yaounde_live_room_v3";
+// Global Resilient Cloud Shared Room for Real-Time Multi-Phone Sync
+const CLOUD_SYNC_PRIMARY = "https://api.restful-api.dev/objects";
+const CLOUD_ROOM_ID = "terrasse_pos_yaounde_live_v4";
 
 export const cloudSync = {
   async getRoomData() {
     try {
-      const res = await fetch(`${CLOUD_SYNC_ENDPOINT}/${CLOUD_ROOM_ID}`, {
+      const res = await fetch(`${CLOUD_SYNC_PRIMARY}/${CLOUD_ROOM_ID}`, {
         headers: { "Cache-Control": "no-cache" },
       });
       if (res.ok) {
@@ -44,35 +50,36 @@ export const cloudSync = {
         return json.data || null;
       }
     } catch (err) {
-      console.warn("[CloudSync] Remote cloud room fetch error:", err);
+      console.warn("[CloudSync] Primary fetch error:", err);
     }
     return null;
   },
 
   async saveRoomData(dataState) {
     try {
-      const bodyPayload = {
-        name: "La Terrasse Bar Yaounde Live Room",
+      const payload = {
+        name: "La Terrasse Bar Yaounde Real-Time Room",
+        updatedAt: new Date().toISOString(),
         data: dataState,
       };
-      const res = await fetch(`${CLOUD_SYNC_ENDPOINT}/${CLOUD_ROOM_ID}`, {
+      const res = await fetch(`${CLOUD_SYNC_PRIMARY}/${CLOUD_ROOM_ID}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(bodyPayload),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok && res.status === 404) {
-        await fetch(CLOUD_SYNC_ENDPOINT, {
+        await fetch(CLOUD_SYNC_PRIMARY, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             id: CLOUD_ROOM_ID,
-            ...bodyPayload,
+            ...payload,
           }),
         });
       }
     } catch (err) {
-      console.warn("[CloudSync] Remote cloud room save error:", err);
+      console.warn("[CloudSync] Save error:", err);
     }
   },
 };
@@ -162,7 +169,6 @@ export const api = {
     let socket = null;
     try {
       const wsTarget = getWsUrl();
-      console.log("[WebSocket Client] Connecting to:", wsTarget);
       socket = new WebSocket(wsTarget);
 
       socket.onopen = () => {
@@ -178,12 +184,13 @@ export const api = {
         }
       };
 
-      socket.onerror = (err) => {
-        console.warn("[WebSocket Client] Socket error, running in fallback mode");
+      socket.onerror = () => {
+        console.warn(
+          "[WebSocket Client] Socket error, running in fallback mode"
+        );
       };
 
       socket.onclose = () => {
-        console.log("[WebSocket Client] Closed, attempting reconnect in 5s...");
         setTimeout(() => api.connectWebSocket(onEvent), 5000);
       };
     } catch (e) {

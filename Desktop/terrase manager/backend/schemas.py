@@ -13,6 +13,8 @@ class ProductBase(BaseModel):
     buyPriceCasier: float = Field(..., alias="buy_price_casier")
     sellPriceBottle: float = Field(..., alias="sell_price_bottle")
     currentStockBottles: int = Field(0, alias="current_stock_bottles")
+    stockGlaces: Optional[int] = Field(0, alias="stock_glaces")
+    stockNonGlaces: Optional[int] = Field(0, alias="stock_non_glaces")
     minAlertThresholdBottles: int = Field(24, alias="min_alert_threshold_bottles")
     imageUrl: Optional[str] = Field("🍺", alias="image_url")
 
