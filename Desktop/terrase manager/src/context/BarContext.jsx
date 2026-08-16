@@ -126,7 +126,7 @@ export function BarProvider({ children }) {
       const fetchedMovs = await api.getMovements();
 
       if (prods && prods.length > 0) {
-        // Map backend products ensuring stockGlaces & stockNonGlaces are set
+        // Map backend products ensuring stockGlaces, stockNonGlaces, and imageUrl are set
         const formattedProds = prods.map((p) => {
           const glaced = p.stockGlaces !== undefined && p.stockGlaces !== null
             ? p.stockGlaces
@@ -136,6 +136,7 @@ export function BarProvider({ children }) {
             : ((p.currentStockBottles || 0) - glaced);
           return {
             ...p,
+            imageUrl: p.image_url || p.imageUrl,
             stockGlaces: glaced,
             stockNonGlaces: nonGlaced,
           };
@@ -235,7 +236,7 @@ export function BarProvider({ children }) {
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
 
-    // WebSocket for real-time multi-tablet synchronization
+    // Real-time WebSocket for instant multi-device sync upon modifications
     const socket = api.connectWebSocket((eventPayload) => {
       if (
         eventPayload.event === "SALE_CREATED" ||
@@ -248,12 +249,12 @@ export function BarProvider({ children }) {
       }
     });
 
-    // Real-time polling every 5 seconds across all phones/tablets
+    // Relaxed background polling every 10 minutes (600,000 ms) as requested to save device resources and network
     const pollInterval = setInterval(() => {
       if (navigator.onLine) {
         fetchBackendData();
       }
-    }, 5000);
+    }, 10 * 60 * 1000);
 
     return () => {
       window.removeEventListener("online", handleOnline);
