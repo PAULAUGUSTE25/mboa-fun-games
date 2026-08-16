@@ -498,45 +498,63 @@ export function BarProvider({ children }) {
   };
 
   const addProduct = async (productData) => {
+    const totalStock = Number(productData.currentStockBottles) || 0;
+    const glaces = productData.stockGlaces !== undefined ? Number(productData.stockGlaces) : Math.floor(totalStock * 0.6);
+    const nonGlaces = productData.stockNonGlaces !== undefined ? Number(productData.stockNonGlaces) : (totalStock - glaces);
+
     const newProd = {
       ...productData,
       id: productData.id || `prod-${Date.now()}`,
-      stockGlaces: productData.stockGlaces || Math.floor((productData.currentStockBottles || 0) * 0.6),
-      stockNonGlaces: productData.stockNonGlaces || (productData.currentStockBottles - Math.floor((productData.currentStockBottles || 0) * 0.6)),
+      currentStockBottles: totalStock,
+      stockGlaces: glaces,
+      stockNonGlaces: nonGlaces,
     };
+
     const updatedProducts = [newProd, ...products];
+    setProducts(updatedProducts);
+    productsRef.current = updatedProducts;
+    localStorage.setItem("terrasse_bar_products", JSON.stringify(updatedProducts));
     await persistState(updatedProducts, sales, movements);
 
     if (isBackendConnected) {
       try {
-        await api.addProduct(productData);
-        fetchBackendData();
-      } catch (e) {}
+        await api.addProduct(newProd);
+      } catch (e) {
+        console.warn("[BarContext] Backend addProduct error:", e);
+      }
     }
   };
 
   const updateProduct = async (updatedProd) => {
-    const updatedProducts = products.map((p) => (p.id === updatedProd.id ? updatedProd : p));
+    const updatedProducts = products.map((p) => (p.id === updatedProd.id ? { ...p, ...updatedProd } : p));
+    setProducts(updatedProducts);
+    productsRef.current = updatedProducts;
+    localStorage.setItem("terrasse_bar_products", JSON.stringify(updatedProducts));
     await persistState(updatedProducts, sales, movements);
 
     if (isBackendConnected) {
       try {
         await api.updateProduct(updatedProd.id, updatedProd);
-        fetchBackendData();
-      } catch (e) {}
+      } catch (e) {
+        console.warn("[BarContext] Backend updateProduct error:", e);
+      }
     }
   };
 
   const deleteProduct = async (id) => {
     if (confirm("Voulez-vous vraiment supprimer ce produit de l'inventaire ?")) {
       const updatedProducts = products.filter((p) => p.id !== id);
+      setProducts(updatedProducts);
+      productsRef.current = updatedProducts;
+      localStorage.setItem("terrasse_bar_products", JSON.stringify(updatedProducts));
       await persistState(updatedProducts, sales, movements);
 
       if (isBackendConnected) {
         try {
           await api.deleteProduct(id);
-          fetchBackendData();
-        } catch (e) {}
+        } catch (e) {
+          console.warn("[BarContext] Backend deleteProduct error:", e);
+        }
       }
     }
   };

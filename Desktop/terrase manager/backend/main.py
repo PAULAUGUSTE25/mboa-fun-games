@@ -133,7 +133,8 @@ async def update_product(product_id: str, prod: ProductCreate, db: Session = Dep
     if prod.stockNonGlaces is not None:
         db_prod.stock_non_glaces = prod.stockNonGlaces
     db_prod.min_alert_threshold_bottles = prod.minAlertThresholdBottles
-    db_prod.image_url = prod.imageUrl or "🍺"
+    if prod.imageUrl is not None and prod.imageUrl.strip() != "":
+        db_prod.image_url = prod.imageUrl
 
     db.commit()
     db.refresh(db_prod)

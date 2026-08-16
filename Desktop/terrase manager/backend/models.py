@@ -20,7 +20,7 @@ class ProductModel(Base):
     stock_glaces = Column(Integer, default=0)
     stock_non_glaces = Column(Integer, default=0)
     min_alert_threshold_bottles = Column(Integer, default=24)
-    image_url = Column(String, default="🍺")
+    image_url = Column(Text, default="🍺")
 
 
 class SaleModel(Base):
