@@ -29,11 +29,12 @@ app = FastAPI(
     version="2.4.0",
 )
 
-# Enable CORS for React Vite frontend
+# Enable CORS for React Vite frontend (Netlify, local, and mobile devices)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows local Vite dev server and mobile tablet IPs
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_origin_regex=".*",
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )

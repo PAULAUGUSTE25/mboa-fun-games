@@ -154,17 +154,10 @@ export function BarProvider({ children }) {
       }
 
       setIsBackendConnected(true);
-      
-      // Also push to Cloud Room so remote clients without local backend access get updated
-      cloudSync.saveRoomData({
-        products: prods || productsRef.current,
-        sales: fetchedSales || salesRef.current,
-        movements: fetchedMovs || movementsRef.current,
-      });
     } catch (e) {
       setIsBackendConnected(false);
 
-      // Shared online cloud room sync (for Netlify & multi-phone online sync)
+      // Shared online cloud room sync fallback (only if backend is offline)
       try {
         const cloudData = await cloudSync.getRoomData();
         if (cloudData) {
@@ -181,9 +174,7 @@ export function BarProvider({ children }) {
             localStorage.setItem("terrasse_bar_movements", JSON.stringify(cloudData.movements));
           }
         }
-      } catch (errCloud) {
-        console.warn("[BarContext] Cloud sync fetch error:", errCloud);
-      }
+      } catch (errCloud) {}
     }
   };
 
@@ -257,12 +248,12 @@ export function BarProvider({ children }) {
       }
     });
 
-    // Real-time polling every 1.5 seconds across all phones/tablets
+    // Real-time polling every 5 seconds across all phones/tablets
     const pollInterval = setInterval(() => {
       if (navigator.onLine) {
         fetchBackendData();
       }
-    }, 1500);
+    }, 5000);
 
     return () => {
       window.removeEventListener("online", handleOnline);
