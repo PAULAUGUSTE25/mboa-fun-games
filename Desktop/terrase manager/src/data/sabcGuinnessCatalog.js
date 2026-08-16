@@ -259,7 +259,7 @@ export const INITIAL_PRODUCTS = [
     sellPriceBottle: 800,
     currentStockBottles: 48,
     minAlertThresholdBottles: 24,
-    imageUrl: "/branding/7642241d-d9a1-4bb8-a620-eeed83d9f253.png",
+    imageUrl: "/branding/smirnoff_ice.png",
   },
   {
     id: "gn-malta-btl-33",
@@ -273,7 +273,7 @@ export const INITIAL_PRODUCTS = [
     sellPriceBottle: 500,
     currentStockBottles: 48,
     minAlertThresholdBottles: 24,
-    imageUrl: "/branding/7330e1a3-1da9-437a-91a6-241c195a316c.png",
+    imageUrl: "/branding/malta_guinness.png",
   },
 
   // ==========================================
@@ -291,21 +291,21 @@ export const INITIAL_PRODUCTS = [
     sellPriceBottle: 600,
     currentStockBottles: 36,
     minAlertThresholdBottles: 24,
-    imageUrl: "/branding/74e85544-4149-4f47-8cca-591365404a02.jpg",
+    imageUrl: "/branding/djino_cocktail.png",
   },
   {
     id: "sabc-djino-pamplemousse-65",
-    name: "D'Jino Pamplemousse 65cl",
-    brand: "D'Jino",
-    supplier: SUPPLIERS.SABC,
+    name: "Spécial Pamplemousse 1.5L",
+    brand: "Spécial",
+    supplier: "UCB Cameroun",
     category: CATEGORIES.GAZEUSES,
-    format: "Bouteille 65cl",
-    bottlesPerCasier: 12,
-    buyPriceCasier: 6000,
-    sellPriceBottle: 600,
+    format: "Bouteille 1.5L",
+    bottlesPerCasier: 6,
+    buyPriceCasier: 3600,
+    sellPriceBottle: 700,
     currentStockBottles: 24,
     minAlertThresholdBottles: 12,
-    imageUrl: "/branding/46c12814-ef53-4cd7-a462-55f037e9d806.webp",
+    imageUrl: "/branding/special_pamplemousse.jpg",
   },
   {
     id: "sabc-djino-citron-65",
@@ -463,8 +463,22 @@ export const INITIAL_PRODUCTS = [
   },
 
   // ==========================================
-  // --- SABC EAUX MINERALES ---
+  // --- EAUX MINERALES ---
   // ==========================================
+  {
+    id: "supermont-15",
+    name: "Supermont 1.5L",
+    brand: "Supermont",
+    supplier: "Source du Pays (Supermont)",
+    category: CATEGORIES.EAUX,
+    format: "Pack 6 Bouteilles 1.5L",
+    bottlesPerCasier: 6,
+    buyPriceCasier: 1800,
+    sellPriceBottle: 400,
+    currentStockBottles: 36,
+    minAlertThresholdBottles: 30,
+    imageUrl: "/branding/supermont.png",
+  },
   {
     id: "sabc-tangui-15",
     name: "Source Tangui 1.5L",
@@ -477,7 +491,7 @@ export const INITIAL_PRODUCTS = [
     sellPriceBottle: 400,
     currentStockBottles: 30,
     minAlertThresholdBottles: 30,
-    imageUrl: "/branding/3eb82c7c-b948-467f-959c-a52672c53cd1.jpg",
+    imageUrl: "/branding/supermont.png",
   },
 
   // ==========================================
