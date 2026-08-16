@@ -5,6 +5,7 @@ from fastapi import FastAPI, Depends, HTTPException, WebSocket, WebSocketDisconn
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
+from sqlalchemy import text
 from backend.database import engine, Base, get_db
 from backend.models import ProductModel, SaleModel, SaleItemModel, MovementModel
 from backend.schemas import (
@@ -40,8 +41,25 @@ app.add_middleware(
 
 @app.on_event("startup")
 def on_startup():
+    # Execute column migrations for SQLite if columns exist on old database
+    try:
+        with engine.connect() as conn:
+            result = conn.execute(text("PRAGMA table_info(products)")).fetchall()
+            existing_cols = [row[1] for row in result]
+            if existing_cols:
+                if "stock_glaces" not in existing_cols:
+                    print("[Migration] Adding column stock_glaces to products table...")
+                    conn.execute(text("ALTER TABLE products ADD COLUMN stock_glaces INTEGER DEFAULT 0"))
+                if "stock_non_glaces" not in existing_cols:
+                    print("[Migration] Adding column stock_non_glaces to products table...")
+                    conn.execute(text("ALTER TABLE products ADD COLUMN stock_non_glaces INTEGER DEFAULT 0"))
+                conn.commit()
+    except Exception as e:
+        print(f"[Migration Warning]: {e}")
+
     db = next(get_db())
     seed_initial_data(db)
+
 
 
 # WebSocket Route for Real-time Tablet Synchronization
